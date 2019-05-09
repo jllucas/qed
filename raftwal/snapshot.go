@@ -47,3 +47,25 @@ func (f *fsmSnapshot) Persist(sink raft.SnapshotSink) error {
 func (f *fsmSnapshot) Release() {
 	log.Debug("Snapshot created.")
 }
+
+type fakeFsmSnapshot struct {
+	id    uint64
+	store storage.ManagedStore
+	meta  []byte
+}
+
+// Persist closes the sink without doing anything
+func (f *fakeFsmSnapshot) Persist(sink raft.SnapshotSink) error {
+	log.Debug("[Fake] Persisting snapshot...")
+	err := func() error {
+		return sink.Close()
+	}()
+	if err != nil {
+		_ = sink.Cancel()
+	}
+	return err
+}
+
+func (f *fakeFsmSnapshot) Release() {
+	log.Debug("[Fake] Snapshot created.")
+}

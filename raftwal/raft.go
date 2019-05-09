@@ -80,8 +80,8 @@ type RaftBalloon struct {
 		db         storage.ManagedStore    // Persistent database
 		log        raft.LogStore           // Persistent log store
 		rocksStore *raftrocks.RocksDBStore // Underlying rocksdb-backed persistent log store
-		//stable    *raftrocks.RocksDBStore // Persistent k-v store
-		snapshots *raft.FileSnapshotStore // Persistent snapstop store
+		//stable    *raftrocks.RocksDBStore	// Persistent k-v store
+		snapshots *raft.DiscardSnapshotStore // Discard snapstop store
 	}
 
 	sync.Mutex
@@ -165,9 +165,8 @@ func (b *RaftBalloon) Open(bootstrap bool, metadata map[string]string) error {
 		return err
 	}
 
-	// Create the snapshot store. This allows the Raft to truncate the log. The library creates
-	// a folder to store the snapshots in.
-	b.store.snapshots, err = raft.NewFileSnapshotStoreWithLogger(b.path, retainSnapshotCount, log.GetLogger())
+	// Create the snapshot store. This allows the Raft to truncate the log. The library discards snapshots
+	b.store.snapshots = raft.NewDiscardSnapshotStore()
 	if err != nil {
 		return fmt.Errorf("file snapshot store: %s", err)
 	}

@@ -213,7 +213,7 @@ func (fsm *BalloonFSM) Snapshot() (raft.FSMSnapshot, error) {
 		return nil, err
 	}
 	// change lastVersion by checkpoint structure
-	return &fsmSnapshot{id: id, store: fsm.store, meta: meta}, nil
+	return &fakeFsmSnapshot{id: id, store: fsm.store, meta: meta}, nil
 }
 
 // Restore restores the node to a previous state.
