@@ -200,11 +200,12 @@ func (fsm *BalloonFSM) Snapshot() (raft.FSMSnapshot, error) {
 	fsm.restoreMu.Lock()
 	defer fsm.restoreMu.Unlock()
 
-	id, err := fsm.store.Snapshot()
-	if err != nil {
-		return nil, err
-	}
-	log.Debugf("Generating snapshot until version: %d (balloon version %d)", id, fsm.balloon.Version())
+	id := uint64(0)
+	// id, err := fsm.store.Snapshot()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// log.Debugf("Generating snapshot until version: %d (balloon version %d)", id, fsm.balloon.Version())
 
 	// Copy the node metadata.
 	meta, err := json.Marshal(fsm.meta)
