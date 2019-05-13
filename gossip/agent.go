@@ -307,7 +307,7 @@ func (a *Agent) Send(msg *Message) {
 	msg.From = a.Self
 	for _, dst := range a.route(msg.From) {
 		log.Debugf("Sending batch to %+v\n", dst.Name)
-		a.gossip.SendReliable(dst, wire)
+		_ = a.gossip.SendReliable(dst, wire)
 	}
 }
 
